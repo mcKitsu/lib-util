@@ -1,13 +1,18 @@
 package net.mckitsu.lib.util;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
-
 import java.util.concurrent.Executor;
 import java.util.function.*;
 
 public class EventHandler {
     private final Executor executor;
 
+    /* **************************************************************************************
+     *  Abstract method
+     */
+
+    /* **************************************************************************************
+     *  Construct method
+     */
     protected EventHandler(Executor executor){
         this.executor = executor;
     }
@@ -16,6 +21,17 @@ public class EventHandler {
         this.executor = null;
     }
 
+    /* **************************************************************************************
+     *  Override method
+     */
+
+    /* **************************************************************************************
+     *  Public method
+     */
+
+    /* **************************************************************************************
+     *  protected method
+     */
     protected boolean execute(Supplier supplier){
         return this.execute(supplier, null);
     }
@@ -24,17 +40,14 @@ public class EventHandler {
         if(supplier == null)
             return false;
 
-        if(this.executor != null){
-            this.executor.execute(() -> {
-                Object result = supplier.get();
-                if(finish!=null)
-                    finish.accept(result);
-            });
-        } else{
+        Runnable exec = () -> {
             Object result = supplier.get();
             if(finish != null)
                 finish.accept(result);
-        }
+        };
+
+        this.doExecute(exec);
+
         return true;
     }
 
@@ -46,17 +59,14 @@ public class EventHandler {
         if(function == null)
             return false;
 
-        if(this.executor != null){
-            this.executor.execute(() -> {
-                Object result = function.apply(object);
-                if(finish!=null)
-                    finish.accept(result);
-            });
-        } else{
+        Runnable exec = () -> {
             Object result = function.apply(object);
-            if(finish != null)
+            if(finish!=null)
                 finish.accept(result);
-        }
+        };
+
+        this.doExecute(exec);
+
         return true;
     }
 
@@ -68,17 +78,14 @@ public class EventHandler {
         if(predicate == null)
             return false;
 
-        if(this.executor != null){
-            this.executor.execute(() -> {
-                boolean result = predicate.test(object);
-                if(finish!=null)
-                    finish.accept(result);
-            });
-        } else{
+        Runnable exec = ()->{
             boolean result = predicate.test(object);
-            if(finish != null)
+            if(finish!=null)
                 finish.accept(result);
-        }
+        };
+
+        this.doExecute(exec);
+
         return true;
     }
 
@@ -90,17 +97,14 @@ public class EventHandler {
         if(biConsumer == null)
             return false;
 
-        if(this.executor != null){
-            this.executor.execute(() -> {
-                biConsumer.accept(object, object2);
-                if(finish!=null)
-                    finish.run();
-            });
-        } else{
+        Runnable exec = ()->{
             biConsumer.accept(object, object2);
-            if(finish != null)
+            if(finish!=null)
                 finish.run();
-        }
+        };
+
+        this.doExecute(exec);
+
         return true;
     }
 
@@ -112,17 +116,14 @@ public class EventHandler {
         if(consumer == null)
             return false;
 
-        if(this.executor != null){
-            this.executor.execute(() -> {
-                consumer.accept(object);
-                if(finish!=null)
-                    finish.run();
-            });
-        } else{
+        Runnable exec = ()->{
             consumer.accept(object);
-            if(finish != null)
+            if(finish!=null)
                 finish.run();
-        }
+        };
+
+        this.doExecute(exec);
+
         return true;
     }
 
@@ -131,24 +132,27 @@ public class EventHandler {
     }
 
     protected boolean execute(Runnable runnable, Runnable finish){
-        if(runnable != null){
-            if(this.executor != null) {
-                this.executor.execute(() -> {
-                    runnable.run();
-                    if (finish != null)
-                        finish.run();
-                });
-
-
-            }else {
-                runnable.run();
-                if(finish != null)
-                    finish.run();
-            }
-
-            return true;
-        }else{
+        if(runnable == null)
             return false;
-        }
+
+        Runnable exec = ()->{
+            runnable.run();
+            if (finish != null)
+                finish.run();
+        };
+
+        this.doExecute(exec);
+
+        return true;
+    }
+    /* **************************************************************************************
+     *  Private method
+     */
+    private void doExecute(Runnable exec){
+        if(this.executor != null)
+            this.executor.execute(exec);
+
+        else
+            exec.run();
     }
 }
