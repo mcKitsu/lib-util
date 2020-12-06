@@ -127,6 +127,24 @@ public class EventHandler {
         return true;
     }
 
+    protected void executeWait(Consumer consumer, Object object, Runnable finish){
+        if(consumer == null)
+            return;
+
+        if(finish == null)
+            return;
+
+        Runnable exec = ()->{
+            consumer.accept(object);
+            finish.run();
+            synchronized (finish){
+                finish.notify();
+            }
+        };
+
+        this.doExecuteWait(exec, finish);
+    }
+
     protected boolean execute(Runnable runnable){
         return execute(runnable, null);
     }
@@ -145,6 +163,112 @@ public class EventHandler {
 
         return true;
     }
+
+    protected Object executeWait(Supplier supplier){
+        if(supplier == null)
+            return false;
+
+        Object finish = new Object();
+        final Object[] result = new Object[1];
+
+        Runnable exec = () -> {
+            result[0] = supplier.get();
+            synchronized (finish){
+                finish.notify();
+            }
+        };
+
+        this.doExecuteWait(exec, finish);
+
+        return result[0];
+    }
+
+    protected Object executeWait(Function function, Object object){
+        if(function == null)
+            return false;
+
+        Object finish = new Object();
+        final Object[] result = new Object[1];
+
+        Runnable exec = () -> {
+            result[0] = function.apply(object);
+            synchronized (finish){
+                finish.notify();
+            }
+        };
+
+        this.doExecuteWait(exec, finish);
+
+        return result[0];
+    }
+
+    protected boolean executeWait(Predicate predicate, Object object){
+        if(predicate == null)
+            return false;
+
+        final boolean[] result = new boolean[1];
+
+        Object finish = new Object();
+
+        Runnable exec = ()->{
+            result[0] = predicate.test(object);
+            synchronized (finish){
+                finish.notify();
+            }
+        };
+
+        this.doExecuteWait(exec, finish);
+
+        return result[0];
+    }
+
+    protected void executeWait(BiConsumer biConsumer, Object object, Object object2){
+        if(biConsumer == null)
+            return;
+
+        Object finish = new Object();
+
+        Runnable exec = ()->{
+            biConsumer.accept(object, object2);
+            synchronized (finish){
+                finish.notify();
+            }
+        };
+
+        this.doExecuteWait(exec, finish);
+    }
+
+    protected void executeWait(Consumer consumer, Object object){
+        if(consumer == null)
+            return;
+
+        Object finish = new Object();
+
+        Runnable exec = ()->{
+            consumer.accept(object);
+            synchronized (finish){
+                finish.notify();
+            }
+        };
+
+        this.doExecuteWait(exec, finish);
+    }
+
+    protected void executeWait(Runnable runnable){
+        if(runnable == null)
+            return;
+
+        Object finish = new Object();
+
+        Runnable exec = ()->{
+            runnable.run();
+            synchronized (finish){
+                finish.notify();
+            }
+        };
+
+        this.doExecuteWait(exec, finish);
+    }
     /* **************************************************************************************
      *  Private method
      */
@@ -153,6 +277,22 @@ public class EventHandler {
             this.executor.execute(exec);
 
         else
+            exec.run();
+    }
+
+    private void doExecuteWait(Runnable exec, Object finish){
+        if(this.executor != null) {
+            this.executor.execute(exec);
+            synchronized (finish){
+                try {
+                    System.out.println("Wait");
+                    finish.wait();
+                    System.out.println("Wait end");
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }else
             exec.run();
     }
 }
