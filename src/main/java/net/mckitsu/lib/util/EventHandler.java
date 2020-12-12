@@ -285,9 +285,7 @@ public class EventHandler {
             this.executor.execute(exec);
             synchronized (finish){
                 try {
-                    System.out.println("Wait");
                     finish.wait();
-                    System.out.println("Wait end");
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
