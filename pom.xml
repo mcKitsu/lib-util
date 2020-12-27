@@ -6,7 +6,7 @@
 
     <groupId>net.mckitsu.lib</groupId>
     <artifactId>lib-util</artifactId>
-    <version>0.1.4</version>
+    <version>0.1.5</version>
     <url>http://www.kitsu.net</url>
     <build>
         <plugins>
@@ -23,6 +23,14 @@
             </plugin>
         </plugins>
     </build>
+    <dependencies>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>RELEASE</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
