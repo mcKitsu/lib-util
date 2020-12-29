@@ -1,4 +1,4 @@
-package net.mckitsu.lib.util;
+package net.mckitsu.lib.util.encrypt;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

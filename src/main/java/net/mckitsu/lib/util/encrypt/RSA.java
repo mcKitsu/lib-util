@@ -1,4 +1,4 @@
-package net.mckitsu.lib.util;
+package net.mckitsu.lib.util.encrypt;
 
 import java.security.InvalidKeyException;
 import java.security.Key;
@@ -8,7 +8,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
-public class RSA extends net.mckitsu.lib.util.Encrypt {
+public class RSA extends Encrypt {
     public RSA(byte[] key, KeyType keyType) throws NoSuchAlgorithmException, InvalidKeyException, InvalidKeySpecException {
         this(keyConvert(key, keyType));
     }

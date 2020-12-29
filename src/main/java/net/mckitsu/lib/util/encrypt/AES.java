@@ -1,11 +1,11 @@
-package net.mckitsu.lib.util;
+package net.mckitsu.lib.util.encrypt;
 
 import javax.crypto.spec.SecretKeySpec;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 
-public class AES extends net.mckitsu.lib.util.Encrypt {
+public class AES extends Encrypt {
     public AES(byte[] key) throws NoSuchAlgorithmException, InvalidKeyException {
         this(new SecretKeySpec(key, "AES"));
     }

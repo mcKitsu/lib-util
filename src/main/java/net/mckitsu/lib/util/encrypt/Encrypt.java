@@ -1,4 +1,4 @@
-package net.mckitsu.lib.util;
+package net.mckitsu.lib.util.encrypt;
 
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
