@@ -21,14 +21,11 @@ public abstract class EventHandler {
      *  Public method
      */
 
-    /* **************************************************************************************
-     *  protected method
-     */
-    protected boolean execute(Supplier supplier){
+    public boolean execute(Supplier supplier){
         return this.execute(supplier, null);
     }
 
-    protected boolean execute(Supplier supplier, Consumer finish){
+    public boolean execute(Supplier supplier, Consumer finish){
         if(supplier == null)
             return false;
 
@@ -43,11 +40,11 @@ public abstract class EventHandler {
         return true;
     }
 
-    protected boolean execute(Function function, Object object){
+    public boolean execute(Function function, Object object){
         return this.execute(function, object, null);
     }
 
-    protected boolean execute(Function function, Object object, Consumer finish){
+    public boolean execute(Function function, Object object, Consumer finish){
         if(function == null)
             return false;
 
@@ -62,11 +59,11 @@ public abstract class EventHandler {
         return true;
     }
 
-    protected boolean execute(Predicate predicate, Object object){
+    public boolean execute(Predicate predicate, Object object){
         return this.execute(predicate, object, null);
     }
 
-    protected boolean execute(Predicate predicate, Object object, Consumer<Boolean> finish){
+    public boolean execute(Predicate predicate, Object object, Consumer<Boolean> finish){
         if(predicate == null)
             return false;
 
@@ -81,11 +78,11 @@ public abstract class EventHandler {
         return true;
     }
 
-    protected boolean execute(BiConsumer biConsumer, Object object, Object object2){
+    public boolean execute(BiConsumer biConsumer, Object object, Object object2){
         return this.execute(biConsumer, object, object2, null);
     }
 
-    protected boolean execute(BiConsumer biConsumer, Object object, Object object2, Runnable finish){
+    public boolean execute(BiConsumer biConsumer, Object object, Object object2, Runnable finish){
         if(biConsumer == null)
             return false;
 
@@ -100,11 +97,11 @@ public abstract class EventHandler {
         return true;
     }
 
-    protected boolean execute(Consumer consumer, Object object){
+    public boolean execute(Consumer consumer, Object object){
         return this.execute(consumer, object, null);
     }
 
-    protected boolean execute(Consumer consumer, Object object, Runnable finish){
+    public boolean execute(Consumer consumer, Object object, Runnable finish){
         if(consumer == null)
             return false;
 
@@ -119,7 +116,7 @@ public abstract class EventHandler {
         return true;
     }
 
-    protected void executeWait(Consumer consumer, Object object, Runnable finish){
+    public void executeWait(Consumer consumer, Object object, Runnable finish){
         if(consumer == null)
             return;
 
@@ -137,11 +134,11 @@ public abstract class EventHandler {
         this.doExecuteWait(exec, finish);
     }
 
-    protected boolean execute(Runnable runnable){
+    public boolean execute(Runnable runnable){
         return execute(runnable, null);
     }
 
-    protected boolean execute(Runnable runnable, Runnable finish){
+    public boolean execute(Runnable runnable, Runnable finish){
         if(runnable == null)
             return false;
 
@@ -156,7 +153,7 @@ public abstract class EventHandler {
         return true;
     }
 
-    protected Object executeWait(Supplier supplier){
+    public Object executeWait(Supplier supplier){
         if(supplier == null)
             return false;
 
@@ -175,7 +172,7 @@ public abstract class EventHandler {
         return result[0];
     }
 
-    protected Object executeWait(Function function, Object object){
+    public Object executeWait(Function function, Object object){
         if(function == null)
             return false;
 
@@ -194,7 +191,7 @@ public abstract class EventHandler {
         return result[0];
     }
 
-    protected boolean executeWait(Predicate predicate, Object object){
+    public boolean executeWait(Predicate predicate, Object object){
         if(predicate == null)
             return false;
 
@@ -214,7 +211,7 @@ public abstract class EventHandler {
         return result[0];
     }
 
-    protected void executeWait(BiConsumer biConsumer, Object object, Object object2){
+    public void executeWait(BiConsumer biConsumer, Object object, Object object2){
         if(biConsumer == null)
             return;
 
@@ -230,7 +227,7 @@ public abstract class EventHandler {
         this.doExecuteWait(exec, finish);
     }
 
-    protected void executeWait(Consumer consumer, Object object){
+    public void executeWait(Consumer consumer, Object object){
         if(consumer == null)
             return;
 
@@ -246,7 +243,7 @@ public abstract class EventHandler {
         this.doExecuteWait(exec, finish);
     }
 
-    protected void executeWait(Runnable runnable){
+    public void executeWait(Runnable runnable){
         if(runnable == null)
             return;
 
@@ -261,6 +258,11 @@ public abstract class EventHandler {
 
         this.doExecuteWait(exec, finish);
     }
+
+    /* **************************************************************************************
+     *  protected method
+     */
+
     /* **************************************************************************************
      *  Private method
      */
