@@ -3,23 +3,15 @@ package net.mckitsu.lib.util;
 import java.util.concurrent.Executor;
 import java.util.function.*;
 
-public class EventHandler {
-    private final Executor executor;
-
+public abstract class EventHandler {
     /* **************************************************************************************
      *  Abstract method
      */
-
+    protected abstract Executor getExecutor();
     /* **************************************************************************************
      *  Construct method
      */
-    protected EventHandler(Executor executor){
-        this.executor = executor;
-    }
-
-    protected EventHandler(){
-        this.executor = null;
-    }
+    protected EventHandler(){}
 
     /* **************************************************************************************
      *  Override method
@@ -273,16 +265,20 @@ public class EventHandler {
      *  Private method
      */
     private void doExecute(Runnable exec){
-        if(this.executor != null)
-            this.executor.execute(exec);
+        Executor executor = getExecutor();
+
+        if(executor != null)
+            executor.execute(exec);
 
         else
             exec.run();
     }
 
     private void doExecuteWait(Runnable exec, Object finish){
-        if(this.executor != null) {
-            this.executor.execute(exec);
+        Executor executor = getExecutor();
+
+        if(executor != null) {
+            executor.execute(exec);
             synchronized (finish){
                 try {
                     finish.wait();
