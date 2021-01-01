@@ -11,7 +11,7 @@ public abstract class EventHandler {
     /* **************************************************************************************
      *  Construct method
      */
-    protected EventHandler(){}
+    public EventHandler(){}
 
     /* **************************************************************************************
      *  Override method
