@@ -21,11 +21,11 @@ public abstract class EventHandler {
      *  Public method
      */
 
-    public <R> boolean execute(Supplier<R> supplier){
-        return this.execute(supplier, null);
+    public <R> boolean executeSupplier(Supplier<R> supplier){
+        return this.executeSupplier(supplier, null);
     }
 
-    public <R> boolean execute(Supplier<R> supplier, Consumer<R> finish){
+    public <R> boolean executeSupplier(Supplier<R> supplier, Consumer<R> finish){
         if(supplier == null)
             return false;
 
@@ -41,18 +41,10 @@ public abstract class EventHandler {
     }
 
     public <A, R> boolean executeFunction(Function<A, R> function, A attachment){
-        return this.execute(function, attachment, null);
+        return this.executeFunction(function, attachment, null);
     }
 
     public <A, R> boolean executeFunction(Function<A, R> function, A attachment, Consumer<R> finish){
-        return this.execute(function, attachment, finish);
-    }
-
-    public <A, R> boolean execute(Function<A, R> function, A attachment){
-        return this.execute(function, attachment, null);
-    }
-
-    public <A, R> boolean execute(Function<A, R> function, A attachment, Consumer<R> finish){
         if(function == null)
             return false;
 
@@ -67,11 +59,11 @@ public abstract class EventHandler {
         return true;
     }
 
-    public <A> boolean execute(Predicate<? super A> predicate, A attachment){
-        return this.execute(predicate, attachment, null);
+    public <A> boolean executePredicate(Predicate<? super A> predicate, A attachment){
+        return this.executePredicate(predicate, attachment, null);
     }
 
-    public <A> boolean execute(Predicate<? super A> predicate, A attachment, Consumer<Boolean> finish){
+    public <A> boolean executePredicate(Predicate<? super A> predicate, A attachment, Consumer<Boolean> finish){
         if(predicate == null)
             return false;
 
@@ -86,11 +78,11 @@ public abstract class EventHandler {
         return true;
     }
 
-    public <A, B> boolean execute(BiConsumer<? super A, ?super B> biConsumer, A attachment, B attachment2){
-        return this.execute(biConsumer, attachment, attachment2, null);
+    public <A, B> boolean executeBiConsumer(BiConsumer<? super A, ?super B> biConsumer, A attachment, B attachment2){
+        return this.executeBiConsumer(biConsumer, attachment, attachment2, null);
     }
 
-    public <A, B> boolean execute(BiConsumer<? super A, ?super B> biConsumer, A attachment, B attachment2, Runnable finish){
+    public <A, B> boolean executeBiConsumer(BiConsumer<? super A, ?super B> biConsumer, A attachment, B attachment2, Runnable finish){
         if(biConsumer == null)
             return false;
 
@@ -105,11 +97,11 @@ public abstract class EventHandler {
         return true;
     }
 
-    public <A> boolean execute(Consumer<? super A> consumer, A attachment){
-        return this.execute(consumer, attachment, null);
+    public <A> boolean executeConsumer(Consumer<? super A> consumer, A attachment){
+        return this.executeConsumer(consumer, attachment, null);
     }
 
-    public <A> boolean execute(Consumer<? super A> consumer, A attachment, Runnable finish){
+    public <A> boolean executeConsumer(Consumer<? super A> consumer, A attachment, Runnable finish){
         if(consumer == null)
             return false;
 
@@ -124,29 +116,11 @@ public abstract class EventHandler {
         return true;
     }
 
-    public <A> void executeWait(Consumer<? super A> consumer, A attachment, Runnable finish){
-        if(consumer == null)
-            return;
-
-        if(finish == null)
-            return;
-
-        Runnable exec = ()->{
-            consumer.accept(attachment);
-            finish.run();
-            synchronized (finish){
-                finish.notify();
-            }
-        };
-
-        this.doExecuteWait(exec, finish);
+    public boolean executeRunnable(Runnable runnable){
+        return executeRunnable(runnable, null);
     }
 
-    public boolean execute(Runnable runnable){
-        return execute(runnable, null);
-    }
-
-    public boolean execute(Runnable runnable, Runnable finish){
+    public boolean executeRunnable(Runnable runnable, Runnable finish){
         if(runnable == null)
             return false;
 
@@ -161,7 +135,58 @@ public abstract class EventHandler {
         return true;
     }
 
-    public <R> R executeWait(Supplier<R> supplier){
+    public <R> boolean execute(Supplier<R> supplier){
+        return this.executeSupplier(supplier, null);
+    }
+
+    public <R> boolean execute(Supplier<R> supplier, Consumer<R> finish){
+        return this.executeSupplier(supplier, finish);
+    }
+
+    public <A, R> boolean execute(Function<A, R> function, A attachment){
+        return this.executeFunction(function, attachment, null);
+    }
+
+    public <A, R> boolean execute(Function<A, R> function, A attachment, Consumer<R> finish){
+        return this.executeFunction(function, attachment, finish);
+    }
+
+    public <A> boolean execute(Predicate<? super A> predicate, A attachment){
+        return this.executePredicate(predicate, attachment, null);
+    }
+
+    public <A> boolean execute(Predicate<? super A> predicate, A attachment, Consumer<Boolean> finish){
+        return this.executePredicate(predicate, attachment, finish);
+    }
+
+    public <A, B> boolean execute(BiConsumer<? super A, ?super B> biConsumer, A attachment, B attachment2){
+        return this.executeBiConsumer(biConsumer, attachment, attachment2, null);
+    }
+
+    public <A, B> boolean execute(BiConsumer<? super A, ?super B> biConsumer, A attachment, B attachment2, Runnable finish){
+        return this.executeBiConsumer(biConsumer, attachment, attachment2, finish);
+    }
+
+    public <A> boolean execute(Consumer<? super A> consumer, A attachment){
+        return this.executeConsumer(consumer, attachment, null);
+    }
+
+    public <A> boolean execute(Consumer<? super A> consumer, A attachment, Runnable finish){
+        return this.executeConsumer(consumer, attachment, finish);
+    }
+
+    public boolean execute(Runnable runnable){
+        return executeRunnable(runnable, null);
+    }
+
+    public boolean execute(Runnable runnable, Runnable finish){
+        return executeRunnable(runnable, finish);
+    }
+
+    /* **************************************************************************************
+     *  protected method - *Wait
+     */
+    public <R> R executeWaitSupplier(Supplier<R> supplier){
         if(supplier == null)
             return null;
 
@@ -178,10 +203,6 @@ public abstract class EventHandler {
         this.doExecuteWait(exec, finish);
 
         return (R) result[0];
-    }
-
-    public <A, R> R executeWait(Function<A, R> function, A attachment){
-        return executeWaitFunction(function, attachment);
     }
 
     public <A, R> R executeWaitFunction(Function<A, R> function, A attachment){
@@ -203,7 +224,7 @@ public abstract class EventHandler {
         return (R)result[0];
     }
 
-    public <A> boolean executeWait(Predicate<? super A> predicate, A attachment){
+    public <A> boolean executeWaitPredicate(Predicate<? super A> predicate, A attachment){
         if(predicate == null)
             return false;
 
@@ -223,7 +244,7 @@ public abstract class EventHandler {
         return result[0];
     }
 
-    public <A, B> void executeWait(BiConsumer<? super A, ? super B> biConsumer, A attachment, B attachment2){
+    public <A, B> void executeWaitBiConsumer(BiConsumer<? super A, ? super B> biConsumer, A attachment, B attachment2){
         if(biConsumer == null)
             return;
 
@@ -239,7 +260,7 @@ public abstract class EventHandler {
         this.doExecuteWait(exec, finish);
     }
 
-    public <A> void executeWait(Consumer<? super A> consumer, A attachment){
+    public <A> void executeWaitConsumer(Consumer<? super A> consumer, A attachment){
         if(consumer == null)
             return;
 
@@ -255,7 +276,7 @@ public abstract class EventHandler {
         this.doExecuteWait(exec, finish);
     }
 
-    public void executeWait(Runnable runnable){
+    public void executeWaitRunnable(Runnable runnable){
         if(runnable == null)
             return;
 
@@ -271,6 +292,29 @@ public abstract class EventHandler {
         this.doExecuteWait(exec, finish);
     }
 
+    public <R> R executeWait(Supplier<R> supplier){
+        return executeWaitSupplier(supplier);
+    }
+
+    public <A, R> R executeWait(Function<A, R> function, A attachment){
+        return executeWaitFunction(function, attachment);
+    }
+
+    public <A> boolean executeWait(Predicate<? super A> predicate, A attachment){
+        return this.executeWaitPredicate(predicate, attachment);
+    }
+
+    public <A, B> void executeWait(BiConsumer<? super A, ? super B> biConsumer, A attachment, B attachment2){
+        this.executeWaitBiConsumer(biConsumer, attachment, attachment2);
+    }
+
+    public <A> void executeWait(Consumer<? super A> consumer, A attachment){
+        this.executeWaitConsumer(consumer, attachment);
+    }
+
+    public void executeWait(Runnable runnable){
+        this.executeWaitRunnable(runnable);
+    }
     /* **************************************************************************************
      *  protected method
      */
