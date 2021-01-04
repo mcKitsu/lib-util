@@ -39,6 +39,9 @@ public class ByteBufferPool extends BufferPool<ByteBuffer>{
      *  Public method
      */
 
+    public int getBufferSize(){
+        return this.bufferSize;
+    }
     /* **************************************************************************************
      *  protected method
      */
