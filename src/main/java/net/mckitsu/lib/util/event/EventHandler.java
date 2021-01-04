@@ -1,4 +1,4 @@
-package net.mckitsu.lib.util;
+package net.mckitsu.lib.util.event;
 
 import java.util.concurrent.Executor;
 import java.util.function.*;
