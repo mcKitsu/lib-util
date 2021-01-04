@@ -1,8 +1,6 @@
 package net.mckitsu.lib.util.pool;
 
 import java.time.Instant;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -15,6 +13,7 @@ public abstract class BufferPool<E> {
 
     private long lastRecode;
     private long maxLimit;
+    private int recycleTimeInterval = 2;
     /* **************************************************************************************
      *  Abstract method
      */
@@ -89,6 +88,13 @@ public abstract class BufferPool<E> {
         return this.recycle(Instant.now().getEpochSecond());
     }
 
+    public int getRecycleTimeInterval(){
+        return this.recycleTimeInterval;
+    }
+
+    public void setRecycleTimeInterval(int millisecond){
+        this.recycleTimeInterval = millisecond;
+    }
 
     /* **************************************************************************************
      *  protected method
@@ -107,7 +113,7 @@ public abstract class BufferPool<E> {
      */
     private void recycleAuto(){
         long now = Instant.now().getEpochSecond();
-        if(now-this.lastRecode >= 2){
+        if(now-this.lastRecode >= recycleTimeInterval){
             this.recycle(now);
         }else{
             this.maxLimit = Math.min(lastRecode, sizeAvailable());
